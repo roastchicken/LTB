@@ -26,7 +26,7 @@ function love.update()
     print( "Recieved ping:" )
     print( response )
     local pongInfo = string.sub( response, sEnd + 1, -1 )
-    client:send( "PONG " .. pongInfo .. "\r\n" )
+    sendChannel:push( "PONG " .. pongInfo .. "\r\n" )
     print( "Sent pong:" )
     print( "PONG " .. pongInfo )
   elseif string.find( response, "[%w_]+![%w_]+@[%w_]+%.tmi%.twitch%.tv PRIVMSG #[%w_]+ :" ) then
