@@ -42,6 +42,10 @@ sendErrorParse( client, "JOIN " .. config.chan .. "\r\n", "Successfully sent joi
 print( "We've got the client" )
 
 while true do
+  local toSend = sendChannel:pop()
+  if toSend ~= nil then
+    sendErrorParse( client, toSend, "Successfully sent message" )
+  end
   local response = client:receive()
   if response ~= nil then
     receiveChannel:push( response )
