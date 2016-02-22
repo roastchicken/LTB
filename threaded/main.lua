@@ -1,0 +1,49 @@
+local sendChannel
+local receiveChannel
+
+function love.load()
+  love.window.setMode( 1080, 720 )
+  love.window.setTitle( "Lua IRC API" )
+  
+  love.graphics.setBackgroundColor( 102, 102, 102 )
+  
+  local IRCThread = love.thread.newThread( "poll.lua" )
+  sendChannel = love.thread.getChannel( "IRCSend" )
+  receiveChannel = love.thread.getChannel( "IRCReceive" )
+  
+  IRCThread:start()
+  
+end
+
+function love.update()
+
+  local response = receiveChannel:pop()
+  
+  if response == nil then return end
+  
+  if string.find( response, "PING" ) then
+    local sStart, sEnd = string.find( response, " " )
+    print( "Recieved ping:" )
+    print( response )
+    local pongInfo = string.sub( response, sEnd + 1, -1 )
+    client:send( "PONG " .. pongInfo .. "\r\n" )
+    print( "Sent pong:" )
+    print( "PONG " .. pongInfo )
+  elseif string.find( response, "[%w_]+![%w_]+@[%w_]+%.tmi%.twitch%.tv PRIVMSG #[%w_]+ :" ) then
+    local username = string.sub( response, string.find( response, "[%w_]+" ) )
+    local sStart, sEnd = string.find( response, "[%w_]+![%w_]+@[%w_]+%.tmi%.twitch%.tv PRIVMSG #[%w_]+ :" )
+    local message = string.sub( response, sEnd + 1 )
+    print( username .. ": " .. message )
+  else
+    print( response )
+  end
+end
+
+function love.draw()
+  love.graphics.print( love.timer.getDelta(), 10, 10 )
+end
+
+function love.threaderror( thread, errStr )
+  print( "Thread error:" )
+  print( errStr )
+end
