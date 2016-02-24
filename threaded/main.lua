@@ -5,7 +5,7 @@ local sendChannel
 local receiveChannel
 
 function love.load()
-  love.window.setMode( 1080, 720 )
+  love.window.setMode( 1280, 720 )
   love.window.setTitle( "Lua IRC API" )
   
   love.graphics.setBackgroundColor( 102, 102, 102 )
