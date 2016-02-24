@@ -1,3 +1,6 @@
+local config = require( "config" )
+local console = require( "console" )
+
 local sendChannel
 local receiveChannel
 
@@ -13,6 +16,7 @@ function love.load()
   
   IRCThread:start()
   
+  console:init( 0, 0, 560, 720 )
 end
 
 function love.update()
@@ -40,6 +44,7 @@ function love.update()
 end
 
 function love.draw()
+  console:draw()
   love.graphics.print( love.timer.getDelta(), 10, 10 )
 end
 
