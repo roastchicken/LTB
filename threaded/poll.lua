@@ -50,5 +50,5 @@ while true do
   if response ~= nil then
     receiveChannel:push( response )
   end
-  timer.sleep( 0.1 )
+  timer.sleep( 20/30 )
 end
