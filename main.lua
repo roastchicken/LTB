@@ -4,6 +4,21 @@ local console = require( "console" )
 local sendChannel
 local receiveChannel
 
+local function messageType( msg )
+  local msgType = "unknown"
+
+  print( "Trying to find type of message:" ) -- Debug
+  print( msg ) -- Debug
+  
+  if string.sub( msg, 1, 4 ) == "PING" then -- the message is a ping
+    msgType = "ping"
+  elseif string.find( msg, ":[%w_]+![%w_]+@[%w_]+%.tmi%.twitch%.tv PRIVMSG #[%w_]+ :" ) then -- if the message contains this pattern then it is a chat message
+    msgType = "chat"
+  end
+  
+  print( msgType .. " message" )
+end
+
 function love.load()
   love.window.setMode( 1280, 720 )
   love.window.setTitle( "Lua IRC API" )
@@ -25,22 +40,7 @@ function love.update()
   
   if response == nil then return end
   
-  if string.find( response, "PING" ) then
-    local sStart, sEnd = string.find( response, " " )
-    print( "Recieved ping:" )
-    print( response )
-    local pongInfo = string.sub( response, sEnd + 1, -1 )
-    sendChannel:push( "PONG " .. pongInfo .. "\r\n" )
-    print( "Sent pong:" )
-    print( "PONG " .. pongInfo )
-  elseif string.find( response, "[%w_]+![%w_]+@[%w_]+%.tmi%.twitch%.tv PRIVMSG #[%w_]+ :" ) then
-    local username = string.sub( response, string.find( response, "[%w_]+" ) )
-    local sStart, sEnd = string.find( response, "[%w_]+![%w_]+@[%w_]+%.tmi%.twitch%.tv PRIVMSG #[%w_]+ :" )
-    local message = string.sub( response, sEnd + 1 )
-    console:print( username .. ": " .. message )
-  else
-    print( response )
-  end
+  messageType( response )
 end
 
 function love.draw()
