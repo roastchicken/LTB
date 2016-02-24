@@ -5,18 +5,17 @@ local sendChannel
 local receiveChannel
 
 local function messageType( msg )
-  local msgType = "unknown"
-
-  print( "Trying to find type of message:" ) -- Debug
-  print( msg ) -- Debug
+  print( msg )
   
   if string.sub( msg, 1, 4 ) == "PING" then -- the message is a ping
-    msgType = "ping"
+    local pong = string.gsub( msg, "PING", "PONG" )
+    sendChannel:push( pong .. "\r\n" )
   elseif string.find( msg, ":[%w_]+![%w_]+@[%w_]+%.tmi%.twitch%.tv PRIVMSG #[%w_]+ :" ) then -- if the message contains this pattern then it is a chat message
-    msgType = "chat"
+    local username = string.sub( msg, string.find( msg, "[%w_]+" ) )
+    local sStart, sEnd = string.find( msg, "[%w_]+![%w_]+@[%w_]+%.tmi%.twitch%.tv PRIVMSG #[%w_]+ :" )
+    local chatMsg = string.sub( msg, sEnd + 1 )
+    console:print( "Chat message from " .. username .. ": " .. chatMsg )
   end
-  
-  print( msgType .. " message" )
 end
 
 function love.load()
