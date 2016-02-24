@@ -47,6 +47,12 @@ function love.draw()
   console:draw()
   love.graphics.setColor( 255, 255, 255 )
   love.graphics.print( love.timer.getDelta(), 570, 10 )
+  
+  for i = 1,9 do
+    local coord = 72 * i
+    love.graphics.line( 560 + coord, 0, 560 + coord, 720 )
+    love.graphics.line( 560, coord, 1280, coord )
+  end
 end
 
 function love.threaderror( thread, errStr )
