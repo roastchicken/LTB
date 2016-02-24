@@ -45,7 +45,8 @@ end
 
 function love.draw()
   console:draw()
-  love.graphics.print( love.timer.getDelta(), 10, 10 )
+  love.graphics.setColor( 255, 255, 255 )
+  love.graphics.print( love.timer.getDelta(), 570, 10 )
 end
 
 function love.threaderror( thread, errStr )
