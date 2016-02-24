@@ -1,52 +1,27 @@
 local config = require( "config" )
+local console = require( "console" )
 
-local function sendErrorParse( client, sendString, okayMsg )
-  connected, err = client:send( sendString )
-  
-  if connected ~= nil then
-    print( okayMsg )
-  else
-    print( connected )
-    print( "Error: " )
-    print( err )
-  end
-end
+local sendChannel
+local receiveChannel
 
 function love.load()
-  love.window.setMode( 1080, 720 )
+  love.window.setMode( 1280, 720 )
   love.window.setTitle( "Lua IRC API" )
   
   love.graphics.setBackgroundColor( 102, 102, 102 )
   
-  socket = require( "src.socket" )
+  local IRCThread = love.thread.newThread( "poll.lua" )
+  sendChannel = love.thread.getChannel( "IRCSend" )
+  receiveChannel = love.thread.getChannel( "IRCReceive" )
   
-  client = socket.tcp()
+  IRCThread:start()
   
-  client:settimeout( 0.1 )
-  
-  print( "Connecting to server " .. config.host .. ":" .. config.port )
-
-  local connected, err = client:connect( config.host, config.port )
-  
-  if connected == 1 then
-    print( "Successfully connected to server." )
-  else
-    print( connected )
-    print( err )
-  end
-  
-  print( "Logging in as " .. config.nick )
-
-  sendErrorParse( client, "PASS " .. config.pass .. "\r\n", "Successfully sent password" )
-  sendErrorParse( client, "NICK " .. config.nick .. "\r\n", "Successfully sent nickname" )
-  sendErrorParse( client, "USER " .. config.nick .. " " .. config.nick .. " " .. config.nick .. " :" .. config.nick .. " IRC\r\n", "Successfully sent nickname" )
-  sendErrorParse( client, "JOIN " .. config.chan .. "\r\n", "Successfully sent join" )
-  
+  console:init( 0, 0, 560, 720 )
 end
 
 function love.update()
 
-  local response = client:receive()
+  local response = receiveChannel:pop()
   
   if response == nil then return end
   
@@ -55,19 +30,32 @@ function love.update()
     print( "Recieved ping:" )
     print( response )
     local pongInfo = string.sub( response, sEnd + 1, -1 )
-    client:send( "PONG " .. pongInfo .. "\r\n" )
+    sendChannel:push( "PONG " .. pongInfo .. "\r\n" )
     print( "Sent pong:" )
     print( "PONG " .. pongInfo )
   elseif string.find( response, "[%w_]+![%w_]+@[%w_]+%.tmi%.twitch%.tv PRIVMSG #[%w_]+ :" ) then
     local username = string.sub( response, string.find( response, "[%w_]+" ) )
     local sStart, sEnd = string.find( response, "[%w_]+![%w_]+@[%w_]+%.tmi%.twitch%.tv PRIVMSG #[%w_]+ :" )
     local message = string.sub( response, sEnd + 1 )
-    print( username .. ": " .. message )
+    console:print( username .. ": " .. message )
   else
     print( response )
   end
 end
 
 function love.draw()
-  love.graphics.print( love.timer.getDelta(), 10, 10 )
+  console:draw()
+  love.graphics.setColor( 255, 255, 255 )
+  love.graphics.print( love.timer.getDelta(), 570, 10 )
+  
+  for i = 1,9 do
+    local coord = 72 * i
+    love.graphics.line( 560 + coord, 0, 560 + coord, 720 )
+    love.graphics.line( 560, coord, 1280, coord )
+  end
+end
+
+function love.threaderror( thread, errStr )
+  print( "Thread error:" )
+  print( errStr )
 end
