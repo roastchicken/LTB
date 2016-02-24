@@ -37,7 +37,7 @@ function love.update()
     local username = string.sub( response, string.find( response, "[%w_]+" ) )
     local sStart, sEnd = string.find( response, "[%w_]+![%w_]+@[%w_]+%.tmi%.twitch%.tv PRIVMSG #[%w_]+ :" )
     local message = string.sub( response, sEnd + 1 )
-    print( username .. ": " .. message )
+    console:print( username .. ": " .. message )
   else
     print( response )
   end
