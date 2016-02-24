@@ -39,8 +39,6 @@ sendErrorParse( client, "NICK " .. config.nick .. "\r\n", "Successfully sent nic
 sendErrorParse( client, "USER " .. config.nick .. " " .. config.nick .. " " .. config.nick .. " :" .. config.nick .. " IRC\r\n", "Successfully sent user" )
 sendErrorParse( client, "JOIN " .. config.chan .. "\r\n", "Successfully sent join" )
 
-print( "We've got the client" )
-
 while true do
   local toSend = sendChannel:pop()
   if toSend ~= nil then
