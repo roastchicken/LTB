@@ -6,9 +6,6 @@ local receiveChannel
 
 local function messageType( msg )
   local msgType = "unknown"
-
-  print( "Trying to find type of message:" ) -- Debug
-  print( msg ) -- Debug
   
   if string.sub( msg, 1, 4 ) == "PING" then -- the message is a ping
     msgType = "ping"
@@ -16,7 +13,7 @@ local function messageType( msg )
     msgType = "chat"
   end
   
-  print( msgType .. " message" )
+  return msgType
 end
 
 function love.load()
