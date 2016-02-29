@@ -7,13 +7,8 @@ local handlers =
 }
 
 function handle.message( msg, msgType, console )
-  print( "Handling message: " ) -- Debug
-  print( msg ) -- Debug
-  print( "of type: " ) -- Debug
-  print( msgType ) -- Debug
   if handlers[msgType] then
     local send = handlers[msgType]( msg, console ) -- get the return value from the handler to know what to send
-    print( send ) -- Debug
     if send then
       return send
     end
