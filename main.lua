@@ -1,5 +1,6 @@
 local config = require( "config" )
 local console = require( "console" )
+local handle = require( "handle" )
 
 local sendChannel
 local receiveChannel
@@ -37,7 +38,11 @@ function love.update()
   
   if response == nil then return end
   
-  messageType( response )
+  local reply = handle.message( response, messageType( response ), console )
+  
+  if reply then
+    sendChannel:push( reply .. "\r\n" )
+  end
 end
 
 function love.draw()
