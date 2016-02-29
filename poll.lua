@@ -37,6 +37,7 @@ print( "Logging in as " .. config.nick )
 sendErrorParse( client, "PASS " .. config.pass .. "\r\n", "Successfully sent password" )
 sendErrorParse( client, "NICK " .. config.nick .. "\r\n", "Successfully sent nickname" )
 sendErrorParse( client, "USER " .. config.nick .. " " .. config.nick .. " " .. config.nick .. " :" .. config.nick .. " IRC\r\n", "Successfully sent user" )
+sendErrorParse( client, "CAP REQ :twitch.tv/membership\r\n", "Successfully sent membership request" )
 sendErrorParse( client, "JOIN " .. config.chan .. "\r\n", "Successfully sent join" )
 
 while true do
