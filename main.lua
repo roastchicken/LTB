@@ -59,6 +59,10 @@ function love.draw()
   end
 end
 
+function love.wheelmoved( xDelta, yDelta )
+  console:scroll( -yDelta )
+end
+
 function love.threaderror( thread, errStr )
   print( "Thread error:" )
   print( errStr )
