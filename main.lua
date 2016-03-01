@@ -38,6 +38,8 @@ function love.update()
   
   if response == nil then return end
   
+  print( response )
+  
   local reply = handle.message( response, messageType( response ), console )
   
   if reply then
