@@ -1,10 +1,6 @@
 local handle = {}
 
-local handlers =
-{
-  chat = function( msg, console ) handleChat( msg, console ) end,
-  ping = function( msg, console ) handlePing( msg ) end
-}
+local handlers
 
 function handle.message( msg, msgType, console )
   if handlers[msgType] then
@@ -29,5 +25,11 @@ function handlePing( pingMsg )
   local pongMsg = string.gsub( pingMsg, "PING", "PONG" ) -- replace the string "PING" with "PONG" in the ping message
   return pongMsg -- send the pong message back to handle.message so it can send it to main.lua for sending to IRC
 end
+
+handlers =
+{
+  chat = handleChat,
+  ping = handlePing
+}
 
 return handle
